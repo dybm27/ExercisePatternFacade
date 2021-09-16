@@ -1,5 +1,7 @@
 package com.dybm27.casodeusopatronfachada.di
 
+import com.dybm27.casodeusopatronfachada.home.model.HospitalFacade
+import com.dybm27.casodeusopatronfachada.home.model.IHospitalFacade
 import com.dybm27.casodeusopatronfachada.home.model.affiliate.ApiAffiliate
 import com.dybm27.casodeusopatronfachada.home.model.affiliate.IApiAffiliate
 import com.dybm27.casodeusopatronfachada.home.model.appointment.dataaccess.ApiAppointment
@@ -11,10 +13,10 @@ import com.dybm27.casodeusopatronfachada.home.model.specialist.IApiSpecialist
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 
+@InstallIn(SingletonComponent::class)
 @Module
-@InstallIn(ActivityComponent::class)
 abstract class BindInterfacesModule {
     @Binds
     abstract fun bindIApiAffiliate(
@@ -35,4 +37,9 @@ abstract class BindInterfacesModule {
     abstract fun bindIApiAppointment(
         apiAppointment: ApiAppointment
     ): IApiAppointment
+
+    @Binds
+    abstract fun bindIHospitalFacade(
+        hospitalFacade: HospitalFacade
+    ): IHospitalFacade
 }

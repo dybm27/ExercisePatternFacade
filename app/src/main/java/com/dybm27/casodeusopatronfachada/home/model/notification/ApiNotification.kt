@@ -1,9 +1,11 @@
 package com.dybm27.casodeusopatronfachada.home.model.notification
 
+import java.util.*
 import javax.inject.Inject
 
 class ApiNotification @Inject constructor() : IApiNotification {
-    override fun sendNotificationSpecialist() {
-        println("Notificación enviada")
+    override fun sendNotificationSpecialist(phoneNumber: String, date: Date) {
+        println("Notificación enviada al numero $phoneNumber")
+        println("Se agendo cita para la fecha ${date.time}")
     }
 }

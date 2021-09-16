@@ -2,6 +2,7 @@ package com.dybm27.casodeusopatronfachada.home.model.specialist.dataaccess.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.dybm27.casodeusopatronfachada.home.model.specialist.dataaccess.entities.ScheduleEntity
 import com.dybm27.casodeusopatronfachada.home.model.specialist.dataaccess.entities.SpecialistEntity
@@ -21,4 +22,10 @@ interface SpecialistDao {
 
     @Insert
     fun addSchedule(vararg schedule: ScheduleEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addSpecialist(vararg specialistEntity: SpecialistEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addTypeSpecialist(vararg typeSpecialistEntity: TypeSpecialistEntity)
 }
