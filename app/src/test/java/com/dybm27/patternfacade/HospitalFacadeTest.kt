@@ -1,10 +1,10 @@
 package com.dybm27.patternfacade
 
 import com.dybm27.patternfacade.home.model.HospitalFacade
-import com.dybm27.patternfacade.home.model.affiliate.IApiAffiliate
-import com.dybm27.patternfacade.home.model.appointment.dataaccess.IApiAppointment
-import com.dybm27.patternfacade.home.model.notification.IApiNotification
-import com.dybm27.patternfacade.home.model.specialist.IApiSpecialist
+import com.dybm27.patternfacade.home.model.affiliate.IAffiliateRepository
+import com.dybm27.patternfacade.home.model.appointment.IAppointmentRepository
+import com.dybm27.patternfacade.home.model.notification.INotificationRepository
+import com.dybm27.patternfacade.home.model.specialist.ISpecialistRepository
 import org.junit.Test
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -17,24 +17,24 @@ class HospitalFacadeTest {
     private lateinit var hospitalFacade: HospitalFacade
 
     @Mock
-    private lateinit var apiAffiliateMock: IApiAffiliate
+    private lateinit var affiliateRepositoryMock: IAffiliateRepository
 
     @Mock
-    private lateinit var apiSpecialistMock: IApiSpecialist
+    private lateinit var apiSpecialistMock: ISpecialistRepository
 
     @Mock
-    private lateinit var apiNotificationMock: IApiNotification
+    private lateinit var apiNotificationMock: INotificationRepository
 
     @Mock
-    private lateinit var apiAppointmentMock: IApiAppointment
+    private lateinit var appointmentRepositoryMock: IAppointmentRepository
 
     @Before
     fun init() {
         hospitalFacade = HospitalFacade(
-            apiAffiliateMock,
+            affiliateRepositoryMock,
             apiSpecialistMock,
             apiNotificationMock,
-            apiAppointmentMock
+            appointmentRepositoryMock
         )
     }
 

@@ -1,8 +1,8 @@
-package com.dybm27.patternfacade.home.model.appointment.dataaccess
+package com.dybm27.patternfacade.home.model.appointment
 
 import java.util.*
 
-interface IApiAppointment {
+interface IAppointmentRepository {
     fun validateExistingAppointment(
         cc: String,
         date: Date,

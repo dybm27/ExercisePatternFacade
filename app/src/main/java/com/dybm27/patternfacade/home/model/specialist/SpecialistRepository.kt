@@ -7,9 +7,9 @@ import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.TypeSp
 import java.util.*
 import javax.inject.Inject
 
-class ApiSpecialist @Inject constructor(
+class SpecialistRepository @Inject constructor(
     private val specialistDao: SpecialistDao
-) : IApiSpecialist {
+) : ISpecialistRepository {
     override fun getTypeSpecialist(): List<TypeSpecialistEntity> =
         specialistDao.getTypeSpecialists()
 

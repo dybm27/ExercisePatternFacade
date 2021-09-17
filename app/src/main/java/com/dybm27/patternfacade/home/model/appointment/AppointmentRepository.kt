@@ -1,11 +1,12 @@
-package com.dybm27.patternfacade.home.model.appointment.dataaccess
+package com.dybm27.patternfacade.home.model.appointment
 
 import com.dybm27.patternfacade.home.model.appointment.dataaccess.dao.AppointmentDao
 import com.dybm27.patternfacade.home.model.appointment.dataaccess.entities.AppointmentEntity
 import java.util.*
 import javax.inject.Inject
 
-class ApiAppointment @Inject constructor(private val appointmentDao: AppointmentDao) : IApiAppointment {
+class AppointmentRepository @Inject constructor(private val appointmentDao: AppointmentDao) :
+    IAppointmentRepository {
     override fun validateExistingAppointment(
         cc: String,
         date: Date,

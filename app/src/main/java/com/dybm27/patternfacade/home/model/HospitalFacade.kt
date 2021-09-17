@@ -1,9 +1,9 @@
 package com.dybm27.patternfacade.home.model
 
-import com.dybm27.patternfacade.home.model.affiliate.IApiAffiliate
-import com.dybm27.patternfacade.home.model.appointment.dataaccess.IApiAppointment
-import com.dybm27.patternfacade.home.model.notification.IApiNotification
-import com.dybm27.patternfacade.home.model.specialist.IApiSpecialist
+import com.dybm27.patternfacade.home.model.affiliate.IAffiliateRepository
+import com.dybm27.patternfacade.home.model.appointment.IAppointmentRepository
+import com.dybm27.patternfacade.home.model.notification.INotificationRepository
+import com.dybm27.patternfacade.home.model.specialist.ISpecialistRepository
 import com.dybm27.patternfacade.home.view.data.Specialist
 import com.dybm27.patternfacade.home.view.data.TypeSpecialist
 import com.dybm27.patternfacade.util.ResultApi
@@ -17,10 +17,10 @@ import java.util.*
 import javax.inject.Inject
 
 class HospitalFacade @Inject constructor(
-    private val apiAffiliate: IApiAffiliate,
-    private val apiSpecialist: IApiSpecialist,
-    private val apiNotification: IApiNotification,
-    private val apiAppointment: IApiAppointment
+    private val affiliateRepository: IAffiliateRepository,
+    private val specialistRepository: ISpecialistRepository,
+    private val notificationRepository: INotificationRepository,
+    private val appointmentRepository: IAppointmentRepository
 ) : IHospitalFacade {
 
     companion object Messages {
@@ -42,15 +42,15 @@ class HospitalFacade @Inject constructor(
     ): Flow<ResultApi<String>> =
         flow {
             emit(ResultApi.loading())
-            if (!apiAffiliate.validateAffiliation(cc)) {
+            if (!affiliateRepository.validateAffiliation(cc)) {
                 emit(ResultApi.success(YOU_ARE_NOT_AFFILIATED))
-            } else if (!apiSpecialist.validateTheAvailabilityOfTheSpecialist(
+            } else if (!specialistRepository.validateTheAvailabilityOfTheSpecialist(
                     specialist.id,
                     date
                 )
             ) {
                 emit(ResultApi.success(SPECIALIST_NOT_AVAILABLE))
-            } else if (!apiAppointment.validateExistingAppointment(
+            } else if (!appointmentRepository.validateExistingAppointment(
                     cc,
                     date,
                     specialist.id,
@@ -63,8 +63,8 @@ class HospitalFacade @Inject constructor(
                     )
                 )
             } else {
-                apiSpecialist.addAppointment(specialist.id, date)
-                apiNotification.sendNotificationSpecialist(specialist.phoneNumber, date)
+                specialistRepository.addAppointment(specialist.id, date)
+                notificationRepository.sendNotificationSpecialist(specialist.phoneNumber, date)
                 emit(ResultApi.success(REGISTERED_APPOINTMENT))
             }
         }.flowOn(Dispatchers.IO)
@@ -74,7 +74,7 @@ class HospitalFacade @Inject constructor(
             emit(ResultApi.loading())
             emit(
                 ResultApi.success(
-                    apiSpecialist.getTypeSpecialist().fromListTypeSpecialistModelToView()
+                    specialistRepository.getTypeSpecialist().fromListTypeSpecialistModelToView()
                 )
             )
         }.flowOn(Dispatchers.IO)
@@ -82,7 +82,7 @@ class HospitalFacade @Inject constructor(
     override suspend fun getSpecialists(): Flow<ResultApi<List<Specialist>>> =
         flow {
             emit(ResultApi.loading())
-            emit(ResultApi.success(apiSpecialist.getSpecialist().fromListSpecialistModelToView()))
+            emit(ResultApi.success(specialistRepository.getSpecialist().fromListSpecialistModelToView()))
         }.flowOn(Dispatchers.IO)
 
 }

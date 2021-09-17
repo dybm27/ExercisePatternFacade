@@ -4,7 +4,7 @@ import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.Specia
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.TypeSpecialistEntity
 import java.util.*
 
-interface IApiSpecialist {
+interface ISpecialistRepository {
     fun getTypeSpecialist(): List<TypeSpecialistEntity>
     fun getSpecialist(): List<SpecialistEntity>
     fun validateTheAvailabilityOfTheSpecialist(

@@ -3,7 +3,7 @@ package com.dybm27.patternfacade.home.model.affiliate
 import com.dybm27.patternfacade.home.model.affiliate.dataaccess.dao.AffiliateDao
 import javax.inject.Inject
 
-class ApiAffiliate @Inject constructor(private val affiliateDao: AffiliateDao) : IApiAffiliate {
+class AffiliateRepositoryRepository @Inject constructor(private val affiliateDao: AffiliateDao) : IAffiliateRepository {
 
     override fun validateAffiliation(cc: String): Boolean {
         val affiliate = affiliateDao.getAffiliate(cc)

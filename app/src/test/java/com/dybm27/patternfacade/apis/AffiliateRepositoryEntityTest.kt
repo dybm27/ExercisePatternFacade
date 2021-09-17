@@ -1,7 +1,7 @@
 package com.dybm27.patternfacade.apis
 
 import com.dybm27.patternfacade.databuilder.AffiliateTestDataBuilder
-import com.dybm27.patternfacade.home.model.affiliate.ApiAffiliate
+import com.dybm27.patternfacade.home.model.affiliate.AffiliateRepositoryRepository
 import com.dybm27.patternfacade.home.model.affiliate.dataaccess.dao.AffiliateDao
 import org.junit.Assert.*
 import org.junit.Before
@@ -12,16 +12,16 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class ApiAffiliateEntityTest {
+class AffiliateRepositoryEntityTest {
 
-    private lateinit var apiAffiliate: ApiAffiliate
+    private lateinit var affiliateRepository: AffiliateRepositoryRepository
 
     @Mock
     private lateinit var affiliateDaoMock: AffiliateDao
 
     @Before
     fun init() {
-        apiAffiliate = ApiAffiliate(affiliateDaoMock)
+        affiliateRepository = AffiliateRepositoryRepository(affiliateDaoMock)
     }
 
     @Test
@@ -32,7 +32,7 @@ class ApiAffiliateEntityTest {
         `when`(affiliateDaoMock.getAffiliate(cc))
             .thenReturn(affiliate)
         //Act
-        val res = apiAffiliate.validateAffiliation(cc)
+        val res = affiliateRepository.validateAffiliation(cc)
         //Assert
         assertTrue(res)
     }
@@ -44,7 +44,7 @@ class ApiAffiliateEntityTest {
         `when`(affiliateDaoMock.getAffiliate(cc))
             .thenReturn(null)
         //Act
-        val res = apiAffiliate.validateAffiliation(cc)
+        val res = affiliateRepository.validateAffiliation(cc)
         //Assert
         assertFalse(res)
     }
