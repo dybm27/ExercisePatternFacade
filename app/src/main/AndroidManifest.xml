@@ -3,16 +3,17 @@
     package="com.dybm27.patternfacade">
 
     <application
-        android:name="com.dybm27.patternfacade.MyApplication"
-        android:allowBackup="true"
+        android:name=".MyApplication"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CasoDeUsoPatronFachada">
+        android:theme="@style/Theme.PatternFacade">
         <activity
-            android:exported="true"
-            android:name=".home.view.MainActivity">
+            android:name=".ui.MainActivity"
+            android:theme="@style/Theme.PatternFacade.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
