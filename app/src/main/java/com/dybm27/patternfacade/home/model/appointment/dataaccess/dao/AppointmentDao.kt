@@ -13,5 +13,5 @@ interface AppointmentDao {
     fun getAppointment(cc: String, date: Date, idSpecialist: Long, idType: Long): AppointmentEntity?
 
     @Insert
-    fun addAppointment(vararg appointment: AppointmentEntity)
+    suspend fun addAppointment(vararg appointment: AppointmentEntity)
 }

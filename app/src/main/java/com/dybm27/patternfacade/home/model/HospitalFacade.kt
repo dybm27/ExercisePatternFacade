@@ -4,15 +4,14 @@ import com.dybm27.patternfacade.home.model.affiliate.IAffiliateRepository
 import com.dybm27.patternfacade.home.model.appointment.IAppointmentRepository
 import com.dybm27.patternfacade.home.model.notification.INotificationRepository
 import com.dybm27.patternfacade.home.model.specialist.ISpecialistRepository
+import com.dybm27.patternfacade.home.view.data.DataSelect
 import com.dybm27.patternfacade.home.view.data.Specialist
 import com.dybm27.patternfacade.home.view.data.TypeSpecialist
 import com.dybm27.patternfacade.util.ResultApi
 import com.dybm27.patternfacade.util.fromListSpecialistModelToView
 import com.dybm27.patternfacade.util.fromListTypeSpecialistModelToView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
 
@@ -42,48 +41,50 @@ class HospitalFacade @Inject constructor(
     ): Flow<ResultApi<String>> =
         flow {
             emit(ResultApi.loading())
-            if (!affiliateRepository.validateAffiliation(cc)) {
-                emit(ResultApi.success(YOU_ARE_NOT_AFFILIATED))
-            } else if (!specialistRepository.validateTheAvailabilityOfTheSpecialist(
+            when {
+                affiliateRepository.validateAffiliation(cc) -> {
+                    emit(ResultApi.success(YOU_ARE_NOT_AFFILIATED))
+                }
+                specialistRepository.validateTheAvailabilityOfTheSpecialist(
                     specialist.id,
                     date
-                )
-            ) {
-                emit(ResultApi.success(SPECIALIST_NOT_AVAILABLE))
-            } else if (!appointmentRepository.validateExistingAppointment(
+                ) -> {
+                    emit(ResultApi.success(SPECIALIST_NOT_AVAILABLE))
+                }
+                appointmentRepository.validateExistingAppointment(
                     cc,
                     date,
                     specialist.id,
                     typeSpecialist.id
-                )
-            ) {
-                emit(
-                    ResultApi.success(
-                        THEY_ALREADY_HAVE_A_REGISTERED_APPOINTMENT_WITH_THE_SPECIALIST
+                ) -> {
+                    emit(
+                        ResultApi.success(
+                            THEY_ALREADY_HAVE_A_REGISTERED_APPOINTMENT_WITH_THE_SPECIALIST
+                        )
                     )
-                )
-            } else {
-                specialistRepository.addAppointment(specialist.id, date)
-                notificationRepository.sendNotificationSpecialist(specialist.phoneNumber, date)
-                emit(ResultApi.success(REGISTERED_APPOINTMENT))
+                }
+                else -> {
+                    specialistRepository.addAppointment(specialist.id, date)
+                    notificationRepository.sendNotificationSpecialist(
+                        specialist.phoneNumber,
+                        date
+                    )
+                    emit(ResultApi.success(REGISTERED_APPOINTMENT))
+                }
             }
         }.flowOn(Dispatchers.IO)
 
-    override suspend fun getTypeSpecialists(): Flow<ResultApi<List<TypeSpecialist>>> =
+    override fun getDataSelects(): Flow<ResultApi<DataSelect>> =
         flow {
             emit(ResultApi.loading())
-            emit(
-                ResultApi.success(
-                    specialistRepository.getTypeSpecialist().fromListTypeSpecialistModelToView()
-                )
-            )
+            specialistRepository.getTypeSpecialist()
+                .combine(specialistRepository.getSpecialist()) { types, specialist ->
+                    val data = DataSelect(
+                        types.fromListTypeSpecialistModelToView(),
+                        specialist.fromListSpecialistModelToView()
+                    )
+                    emit(ResultApi.success(data))
+                }
         }.flowOn(Dispatchers.IO)
-
-    override suspend fun getSpecialists(): Flow<ResultApi<List<Specialist>>> =
-        flow {
-            emit(ResultApi.loading())
-            emit(ResultApi.success(specialistRepository.getSpecialist().fromListSpecialistModelToView()))
-        }.flowOn(Dispatchers.IO)
-
 }
 

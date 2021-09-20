@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dybm27.patternfacade.home.model.IHospitalFacade
+import com.dybm27.patternfacade.home.view.data.DataSelect
 import com.dybm27.patternfacade.home.view.data.Specialist
 import com.dybm27.patternfacade.home.view.data.TypeSpecialist
 import com.dybm27.patternfacade.util.ResultApi
@@ -18,24 +19,19 @@ class HomeViewModel @Inject constructor(
     private val hospitalFacade: IHospitalFacade
 ) : ViewModel() {
 
-    private val _types = MutableLiveData<ResultApi<List<TypeSpecialist>>>()
-    val types = _types
-    private val _specialist = MutableLiveData<ResultApi<List<Specialist>>>()
-    val specialists = _specialist
+    private val _dataSelects = MutableLiveData<ResultApi<DataSelect>>()
+    val dataSelects get() = _dataSelects
     private val _message = MutableLiveData<ResultApi<String>>()
-    val message = _message
+    val message get() = _message
 
     init {
-         getDataSelects()
+        getDataSelects()
     }
 
     private fun getDataSelects() =
         viewModelScope.launch {
-            hospitalFacade.getTypeSpecialists().collect {
-                _types.postValue(it)
-            }
-            hospitalFacade.getSpecialists().collect {
-                _specialist.postValue(it)
+            hospitalFacade.getDataSelects().collect {
+                _dataSelects.postValue(it)
             }
         }
 

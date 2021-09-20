@@ -7,19 +7,20 @@ import androidx.room.Query
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.ScheduleEntity
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.SpecialistEntity
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.TypeSpecialistEntity
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 @Dao
 interface SpecialistDao {
     @Query("select * from type_specialist")
-    fun getTypeSpecialists(): List<TypeSpecialistEntity>
+    fun getTypeSpecialists(): Flow<List<TypeSpecialistEntity>>
 
     @Query("select * from specialist")
-    fun getSpecialists(): List<SpecialistEntity>
+    fun getSpecialists(): Flow<List<SpecialistEntity>>
 
     @Query("select * from schedule where id_specialist = :idSpecialist and date = :date")
     fun getScheduleByDate(idSpecialist: Long, date: Date): ScheduleEntity?
 
     @Insert
-    fun addSchedule(vararg schedule: ScheduleEntity)
+    suspend fun addSchedule(vararg schedule: ScheduleEntity)
 }
