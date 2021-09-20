@@ -4,7 +4,7 @@ import com.dybm27.patternfacade.home.model.affiliate.IAffiliateRepository
 import com.dybm27.patternfacade.home.model.appointment.IAppointmentRepository
 import com.dybm27.patternfacade.home.model.notification.INotificationRepository
 import com.dybm27.patternfacade.home.model.specialist.ISpecialistRepository
-import com.dybm27.patternfacade.home.view.data.DataSelect
+import com.dybm27.patternfacade.home.view.data.DataSelects
 import com.dybm27.patternfacade.home.view.data.Specialist
 import com.dybm27.patternfacade.home.view.data.TypeSpecialist
 import com.dybm27.patternfacade.util.ResultApi
@@ -42,16 +42,16 @@ class HospitalFacade @Inject constructor(
         flow {
             emit(ResultApi.loading())
             when {
-                affiliateRepository.validateAffiliation(cc) -> {
+                !affiliateRepository.validateAffiliation(cc) -> {
                     emit(ResultApi.success(YOU_ARE_NOT_AFFILIATED))
                 }
-                specialistRepository.validateTheAvailabilityOfTheSpecialist(
+                !specialistRepository.validateTheAvailabilityOfTheSpecialist(
                     specialist.id,
                     date
                 ) -> {
                     emit(ResultApi.success(SPECIALIST_NOT_AVAILABLE))
                 }
-                appointmentRepository.validateExistingAppointment(
+                !appointmentRepository.validateExistingAppointment(
                     cc,
                     date,
                     specialist.id,
@@ -65,6 +65,9 @@ class HospitalFacade @Inject constructor(
                 }
                 else -> {
                     specialistRepository.addAppointment(specialist.id, date)
+                    appointmentRepository.registerAppointment(
+                        cc, date, specialist.id, typeSpecialist.id
+                    )
                     notificationRepository.sendNotificationSpecialist(
                         specialist.phoneNumber,
                         date
@@ -74,16 +77,17 @@ class HospitalFacade @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
-    override fun getDataSelects(): Flow<ResultApi<DataSelect>> =
+    override fun getDataSelects(): Flow<ResultApi<DataSelects>> =
         flow {
             emit(ResultApi.loading())
             specialistRepository.getTypeSpecialist()
                 .combine(specialistRepository.getSpecialist()) { types, specialist ->
-                    val data = DataSelect(
+                    DataSelects(
                         types.fromListTypeSpecialistModelToView(),
                         specialist.fromListSpecialistModelToView()
                     )
-                    emit(ResultApi.success(data))
+                }.collect {
+                    emit(ResultApi.success(it))
                 }
         }.flowOn(Dispatchers.IO)
 }
