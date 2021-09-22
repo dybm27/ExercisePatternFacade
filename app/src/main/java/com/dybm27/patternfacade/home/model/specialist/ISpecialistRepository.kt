@@ -11,7 +11,7 @@ interface ISpecialistRepository {
     fun validateTheAvailabilityOfTheSpecialist(
         idSpecialist: Long,
         date: Date
-    ): Boolean
+    )
 
     suspend fun addAppointment(
         idSpecialist: Long,

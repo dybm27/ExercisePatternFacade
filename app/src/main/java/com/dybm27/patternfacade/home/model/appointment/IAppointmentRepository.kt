@@ -8,7 +8,14 @@ interface IAppointmentRepository {
         date: Date,
         idSpecialist: Long,
         idType: Long
-    ): Boolean
+    )
 
-    suspend fun registerAppointment(cc: String, date: Date, idSpecialist: Long, idType: Long)
+    suspend fun registerAppointment(
+        cc: String,
+        date: Date,
+        idSpecialist: Long,
+        idType: Long
+    ): String
+
+    suspend fun validateDate(date: Date)
 }

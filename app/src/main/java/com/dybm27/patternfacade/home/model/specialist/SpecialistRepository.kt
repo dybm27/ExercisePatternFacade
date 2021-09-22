@@ -1,5 +1,6 @@
 package com.dybm27.patternfacade.home.model.specialist
 
+import com.dybm27.patternfacade.home.model.ModelException
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.dao.SpecialistDao
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.ScheduleEntity
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.SpecialistEntity
@@ -22,7 +23,10 @@ class SpecialistRepository @Inject constructor(
     override fun validateTheAvailabilityOfTheSpecialist(
         idSpecialist: Long,
         date: Date
-    ): Boolean = specialistDao.getScheduleByDate(idSpecialist, date) != null
+    ) {
+        if (specialistDao.getScheduleByDate(idSpecialist, date) != null)
+            throw ModelException(ModelException.SPECIALIST_NOT_AVAILABLE)
+    }
 
     override suspend fun addAppointment(idSpecialist: Long, date: Date) =
         specialistDao.addSchedule(ScheduleEntity(idSpecialist = idSpecialist, date = date))

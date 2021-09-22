@@ -22,17 +22,6 @@ class HospitalFacade @Inject constructor(
     private val appointmentRepository: IAppointmentRepository
 ) : IHospitalFacade {
 
-    companion object Messages {
-        const val YOU_ARE_NOT_AFFILIATED = "No te encuentras afiliado."
-        const val SPECIALIST_NOT_AVAILABLE =
-            "El especialista no tiene disponibilidad en esa fecha."
-        const val THEY_ALREADY_HAVE_A_REGISTERED_APPOINTMENT_WITH_THE_SPECIALIST =
-            "Ya tienen cita registrada con el especialista."
-        const val REGISTERED_APPOINTMENT =
-            "Cita registrada."
-    }
-
-
     override suspend fun registerSpecialistAppointment(
         date: Date,
         typeSpecialist: TypeSpecialist,
@@ -41,39 +30,36 @@ class HospitalFacade @Inject constructor(
     ): Flow<ResultApi<String>> =
         flow {
             emit(ResultApi.loading())
-            when {
-                !affiliateRepository.validateAffiliation(cc) -> {
-                    emit(ResultApi.success(YOU_ARE_NOT_AFFILIATED))
-                }
-                !specialistRepository.validateTheAvailabilityOfTheSpecialist(
+            try {
+                appointmentRepository.validateDate(date)
+                affiliateRepository.validateAffiliation(cc)
+                specialistRepository.validateTheAvailabilityOfTheSpecialist(
                     specialist.id,
                     date
-                ) -> {
-                    emit(ResultApi.success(SPECIALIST_NOT_AVAILABLE))
-                }
-                !appointmentRepository.validateExistingAppointment(
+                )
+                appointmentRepository.validateExistingAppointment(
                     cc,
                     date,
                     specialist.id,
                     typeSpecialist.id
-                ) -> {
-                    emit(
-                        ResultApi.success(
-                            THEY_ALREADY_HAVE_A_REGISTERED_APPOINTMENT_WITH_THE_SPECIALIST
+                )
+                specialistRepository.addAppointment(specialist.id, date)
+                emit(
+                    ResultApi.success(
+                        appointmentRepository.registerAppointment(
+                            cc,
+                            date,
+                            specialist.id,
+                            typeSpecialist.id
                         )
                     )
-                }
-                else -> {
-                    specialistRepository.addAppointment(specialist.id, date)
-                    appointmentRepository.registerAppointment(
-                        cc, date, specialist.id, typeSpecialist.id
-                    )
-                    notificationRepository.sendNotificationSpecialist(
-                        specialist.phoneNumber,
-                        date
-                    )
-                    emit(ResultApi.success(REGISTERED_APPOINTMENT))
-                }
+                )
+                notificationRepository.sendNotificationSpecialist(
+                    specialist.phoneNumber,
+                    date
+                )
+            } catch (e: ModelException) {
+                emit(ResultApi.success(e.message))
             }
         }.flowOn(Dispatchers.IO)
 
