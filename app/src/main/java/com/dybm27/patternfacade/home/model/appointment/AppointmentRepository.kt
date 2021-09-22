@@ -3,10 +3,8 @@ package com.dybm27.patternfacade.home.model.appointment
 import com.dybm27.patternfacade.home.model.ModelException
 import com.dybm27.patternfacade.home.model.appointment.dataaccess.dao.AppointmentDao
 import com.dybm27.patternfacade.home.model.appointment.dataaccess.entities.AppointmentEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AppointmentRepository @Inject constructor(private val appointmentDao: AppointmentDao) :
@@ -44,7 +42,6 @@ class AppointmentRepository @Inject constructor(private val appointmentDao: Appo
         calendar.time = date
         val hour = calendar.get(Calendar.HOUR)
         val min = calendar.get(Calendar.MINUTE)
-        println(calendar.get(Calendar.DAY_OF_WEEK))
         if (calendar.get(Calendar.DAY_OF_WEEK) !in 2..6) {
             throw ModelException(ModelException.INVALID_DATE)
         }
@@ -60,7 +57,10 @@ class AppointmentRepository @Inject constructor(private val appointmentDao: Appo
                 }
             }
         }
-
+        val diff = date.time - Date().time
+        if ((TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) < 3) {
+            throw ModelException(ModelException.INVALID_ANTICIPATION_DAYS)
+        }
     }
 
     private fun validateMin(min: Int): Boolean = (min != 0 && min != 30)

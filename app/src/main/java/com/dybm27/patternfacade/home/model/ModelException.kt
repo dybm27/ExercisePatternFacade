@@ -18,6 +18,8 @@ class ModelException(override val message: String) : RuntimeException() {
             "Favor revisar la hora.\n" +
                     "El horario de atención es de 8am a 12pm y de 2pm a 6pm.\n" +
                     "Y se programa cada 30 min "
+        const val INVALID_ANTICIPATION_DAYS =
+            "La cita se debe agendar por lo menos con 3 días de anticipación."
     }
 }
 
