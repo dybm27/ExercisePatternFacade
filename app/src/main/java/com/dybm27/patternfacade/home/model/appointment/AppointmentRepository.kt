@@ -16,7 +16,14 @@ class AppointmentRepository @Inject constructor(private val appointmentDao: Appo
         idSpecialist: Long,
         idType: Long
     ) {
-        if (appointmentDao.getAppointment(cc, date, idSpecialist, idType) != null)
+        if (appointmentDao.getAppointmentDate(cc, date) != null)
+            throw ModelException(ModelException.THEY_ALREADY_HAVE_A_REGISTERED_APPOINTMENT_FOR_THIS_DATE)
+        if (appointmentDao.getAppointmentSpecialist(
+                cc = cc,
+                idSpecialist = idSpecialist,
+                idType = idType
+            ) != null
+        )
             throw ModelException(ModelException.THEY_ALREADY_HAVE_A_REGISTERED_APPOINTMENT_WITH_THE_SPECIALIST)
     }
 
@@ -45,21 +52,24 @@ class AppointmentRepository @Inject constructor(private val appointmentDao: Appo
         if (calendar.get(Calendar.DAY_OF_WEEK) !in 2..6) {
             throw ModelException(ModelException.INVALID_DATE)
         }
+        val diff = date.time - Date().time
+        if ((TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) < 3) {
+            throw ModelException(ModelException.INVALID_ANTICIPATION_DAYS)
+        }
         when (calendar.get(Calendar.AM_PM)) {
             0 -> {
-                if (hour !in 8..11 || validateMin(min)) {
+                if (hour !in 8..11) {
                     throw ModelException(ModelException.INVALID_TIME)
                 }
             }
             1 -> {
-                if (hour !in 2..5 || validateMin(min)) {
+                if (hour !in 2..5) {
                     throw ModelException(ModelException.INVALID_TIME)
                 }
             }
         }
-        val diff = date.time - Date().time
-        if ((TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) < 3) {
-            throw ModelException(ModelException.INVALID_ANTICIPATION_DAYS)
+        if (validateMin(min)) {
+            throw ModelException(ModelException.INVALID_TIME2)
         }
     }
 
