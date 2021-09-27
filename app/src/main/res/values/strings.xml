@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Pattern Facade</string>
+    <string name="title_dialog">AVISO IMPORTANTE!</string>
+    <string name="label_type">Tipos de especialistas</string>
+    <string name="label_specialist">Especialistas</string>
+    <string name="label_cc">Número de documento</string>
+    <string name="label_name">Nombre Paciente</string>
+    <string name="empty_error">Todos los campos son obligatorios</string>
+    <string name="cc_error">Documento erróneo</string>
+    <string name="title">agendar cita con especialista</string>
 </resources>

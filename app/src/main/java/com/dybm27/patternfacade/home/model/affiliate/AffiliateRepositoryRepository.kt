@@ -8,7 +8,7 @@ class AffiliateRepositoryRepository @Inject constructor(private val affiliateDao
     IAffiliateRepository {
 
     override fun validateAffiliation(cc: String) {
-        if (affiliateDao.getAffiliate(cc) != null)
+        if (affiliateDao.getAffiliate(cc) == null)
             throw ModelException(ModelException.YOU_ARE_NOT_AFFILIATED)
     }
 

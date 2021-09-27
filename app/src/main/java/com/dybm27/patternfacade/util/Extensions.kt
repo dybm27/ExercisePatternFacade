@@ -4,6 +4,8 @@ import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.Specia
 import com.dybm27.patternfacade.home.model.specialist.dataaccess.entities.TypeSpecialistEntity
 import com.dybm27.patternfacade.home.view.data.Specialist
 import com.dybm27.patternfacade.home.view.data.TypeSpecialist
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun TypeSpecialistEntity.fromToView(): TypeSpecialist =
     TypeSpecialist(this.id, this.name)
@@ -23,3 +25,8 @@ fun Specialist.fromToModel(): SpecialistEntity =
 
 fun List<SpecialistEntity>.fromListSpecialistModelToView(): List<Specialist> =
     map { it.fromToView() }
+
+fun getFormattedDate(time: Date, s: String): String {
+    val format = SimpleDateFormat(s, Locale.getDefault())
+    return format.format(time)
+}
