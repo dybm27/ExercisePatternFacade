@@ -9,25 +9,20 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
+import com.dybm27.patternfacade.home.view.data.InputWrapper
 
 @Composable
 fun DropdownMenuCustom(
     modifier: Modifier = Modifier,
     data: List<String>,
     label: String,
-    input: String,
-    error: Boolean,
-    clean: Boolean = false,
+    input: InputWrapper,
     isLoading: Boolean = false,
     selectedItem: (String) -> Unit
 ) {
@@ -39,7 +34,7 @@ fun DropdownMenuCustom(
     if (source.collectIsPressedAsState().value) expanded = true
     Column(modifier = modifier) {
         OutlinedTextField(
-            value = if (!clean) input else "",
+            value = input.value,
             onValueChange = { },
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,8 +42,8 @@ fun DropdownMenuCustom(
                     textFieldSize = coordinates.size.toSize()
                 },
             interactionSource = source,
-            label = { Text(if (error) "$label*" else label) },
-            isError = error,
+            label = { Text(if (input.error) "$label*" else label) },
+            isError = input.error,
             readOnly = true,
             enabled = !isLoading,
             trailingIcon = {

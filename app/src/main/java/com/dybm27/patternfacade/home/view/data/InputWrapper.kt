@@ -11,5 +11,5 @@ data class InputWrapper(
     val maxLength: Int = 0,
     val messageError: String = ""
 ) : Parcelable {
-    fun isEmpty(): Boolean = value.isEmpty()
+    fun isEmpty(): Boolean = value.isEmpty() || error
 }

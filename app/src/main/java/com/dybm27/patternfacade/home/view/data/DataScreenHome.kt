@@ -6,8 +6,8 @@ import java.util.*
 
 @Parcelize
 data class DataScreenHome(
-    var type: TypeSpecialist = TypeSpecialist(),
-    var specialist: Specialist = Specialist(),
+    var type: InputWrapper = InputWrapper(),
+    var specialist: InputWrapper = InputWrapper(),
     var cc: InputWrapper = InputWrapper(),
     var name: InputWrapper = InputWrapper(),
     var date: Date = Date()
